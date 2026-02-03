@@ -1,6 +1,10 @@
 package com.example.loginlayout.Repository;
 
+import com.example.loginlayout.Entity.MemberEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 /**
  * MemberRepository
@@ -20,6 +24,8 @@ import org.springframework.stereotype.Repository;
  * - Optional을 반환하여 null 처리 안전
  */
 @Repository
-public interface MemberRepository  {
+public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
+    //로그인 조회에 필요한 아이디조회
+    Optional<MemberEntity> findByUsername(String username);
 
 }

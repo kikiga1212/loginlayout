@@ -23,6 +23,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum RoleType {
-    USER, MANAGE, ADMIN
+    USER, MANAGER, ADMIN
 
 }
