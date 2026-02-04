@@ -1,5 +1,6 @@
 package com.example.loginlayout.Controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * - Spring Security 로그인 폼과 연동
  */
 @Controller
+@Slf4j
 public class LoginController {
 
     /**
@@ -34,6 +36,8 @@ public class LoginController {
      */
     @GetMapping("/login")
     public String login() {
+        log.info("로그인 페이지로 이동");
+
         return null;
     }
 }

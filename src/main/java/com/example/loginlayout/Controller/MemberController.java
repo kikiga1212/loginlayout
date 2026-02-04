@@ -3,6 +3,7 @@ package com.example.loginlayout.Controller;
 import com.example.loginlayout.DTO.MemberDTO;
 import com.example.loginlayout.Service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
  */
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -45,7 +47,8 @@ public class MemberController {
      */
     @GetMapping("/register")
     public String registerPage() {
-        return null;
+        log.info("회원가입 페이지로 이동");
+        return "register";
     }
 
     /**
@@ -61,7 +64,9 @@ public class MemberController {
      */
     @PostMapping("/register")
     public String registerPost(MemberDTO memberDTO) {
+        log.info("회원등록 처리");
+        MemberDTO result = memberService.save(memberDTO);
 
-        return null;
+        return "redirect:/login";
     }
 }

@@ -1,9 +1,16 @@
 package com.example.loginlayout.Service;
 
+import com.example.loginlayout.Entity.MemberEntity;
+import com.example.loginlayout.Repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * CustomUserDetailsService
@@ -23,9 +30,13 @@ import org.springframework.stereotype.Service;
  * - Spring Security 로그인 과정에서 자동 호출
  * - 권한(Role) 정보를 UserDetails에 포함
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailsService  {
+public class CustomUserDetailsService implements UserDetailsService {
+    //로그인과 관련된 테이블의 repository 지정
+    private final MemberRepository memberRepository;
+
 
     /**
      * username 기반 사용자 조회 및 UserDetails 반환
@@ -41,9 +52,22 @@ public class CustomUserDetailsService  {
      * @throws UsernameNotFoundException 사용자가 존재하지 않을 경우
      */
 
+    @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
-        return null;
+        log.info("로그인 정보 읽기");
+        Optional<MemberEntity> memberEntity = memberRepository.findByUsername(username);
+
+        if(memberEntity.isPresent()){//아이디가 존재하면
+            log.info("회원의 정보를 전달");
+            return User.withUsername(memberEntity.get().getUsername())
+                .password(memberEntity.get().getPassword())
+                .roles(memberEntity.get().getRole().name())
+                .build();
+        }else {
+            throw new UsernameNotFoundException("존재하지 않는 id입니다.");
+        }
+
     }
 
 }

@@ -3,8 +3,10 @@ package com.example.loginlayout.Config;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -31,7 +33,7 @@ import java.io.IOException;
  */
 @Slf4j
 @Component
-public class CustomSuccessHandler  {
+public class CustomSuccessHandler  implements AuthenticationSuccessHandler {
 
     /**
      * 로그인 성공 시 처리
@@ -46,6 +48,13 @@ public class CustomSuccessHandler  {
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
+        log.info("로그인 성공후 섹션처리");
+        HttpSession session = request.getSession();
+        String username = authentication.getName();//로그인한 아이디를 저장해서
+
+        session.setAttribute("loginId", username);//loginId섹션명으로 아이디를 저장
+
+        response.sendRedirect("/");
 
 
     }

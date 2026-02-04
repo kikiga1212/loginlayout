@@ -1,9 +1,11 @@
 package com.example.loginlayout.Controller;
 
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * IndexController
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * - 세션 기반 사용자 정보 처리
  */
 @Controller
+@Slf4j
 public class IndexController {
 
     /**
@@ -42,7 +45,11 @@ public class IndexController {
      */
     @GetMapping
     public String index(HttpSession session, Model model){
+        log.info("세션에 저장된 사용자아이디를 저장");
+        String loginId = (String)session.getAttribute("loginId");
+        model.addAttribute("username",loginId);
 
-        return null;
+        log.info("index페이지로 이동");
+        return "index";
     }
 }

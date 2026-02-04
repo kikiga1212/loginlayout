@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -50,7 +51,8 @@ public class SecurityConfig {
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return null;
+
+        return new BCryptPasswordEncoder();
     }
 
     /**
@@ -74,7 +76,31 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())//csrf(변조방지)
+                .authorizeHttpRequests(auth->auth //요청권한지정
+                        //자원폴더 및 파일을 접근허용
+                        .requestMatchers("/css/**", "/js/**", "/img/**","/scss/**", "/vendor/**").permitAll()
+                        //요청 접근 허용
+                        .requestMatchers("/", "/login", "/register").permitAll()
+                        //접근허용을 제외한 모든 요청을 권한(나머지는 로그인사용자만 접근가능)
+                        .anyRequest().authenticated()
+                        //.requestMatchers().hasRole("USER") 특정권한만 접근가능
+                        //.requestMatchers().hasAnyRole("ADMIN", "MANAGER") 특정권한들만 접근가능
+                )
+                .formLogin(form->form //로그인설정
+                        .loginPage("/login")//사용할 로그인페이지 요청
+                        .defaultSuccessUrl("/", true)//로그인성공시 이동할 요청
+                        .successHandler(customSuccessHandler)
+                        .permitAll()//로그인에 접근권한
+                )
+                .logout(logout->logout//로그아웃 설정
+                        .logoutUrl("/logout") //로그아웃 요청
+                        .logoutSuccessUrl("/login")//로그아웃 성고후 이동할 요청
+                        .invalidateHttpSession(true)//해당섹션 정보를 삭제
+                        .deleteCookies("JESSIONID")//클라이언트에 쿠기를 삭제
+                );
 
-        return null;
+        return http.build();
     }
 }

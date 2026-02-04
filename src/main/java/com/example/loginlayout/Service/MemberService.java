@@ -7,6 +7,7 @@ import com.example.loginlayout.Repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 신규 회원 등록
@@ -60,6 +62,7 @@ public class MemberService {
         log.info("서비스(가입)-Entity변환");
         MemberEntity entity = modelMapper.map(memberDTO, MemberEntity.class);
 
+        entity.setPassword(passwordEncoder.encode(memberDTO.getPassword()));//securityCofig작성수
         if(memberRepository.count()==0){
             entity.setRole(RoleType.ADMIN);
         }else if(memberRepository.count()==1){
@@ -140,8 +143,8 @@ public class MemberService {
 
             entity.setFirstName(memberDTO.getFirstName());
             entity.setLastName(memberDTO.getLastName());
-            entity.setPassword(memberDTO.getPassword());
-
+            //entity.setPassword(memberDTO.getPassword());
+            entity.setPassword(passwordEncoder.encode(memberDTO.getPassword()));//securityCofig작성후 위코드를 현재로변경
             log.info("서비스(수정)-수정된 내용을 저장");
             MemberEntity update = memberRepository.save(entity);
 
