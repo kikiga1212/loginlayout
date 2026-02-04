@@ -96,7 +96,7 @@ public class SecurityConfig {
                 )
                 .logout(logout->logout//로그아웃 설정
                         .logoutUrl("/logout") //로그아웃 요청
-                        .logoutSuccessUrl("/login")//로그아웃 성고후 이동할 요청
+                        .logoutSuccessUrl("/login")//로그아웃 성공후 이동할 요청
                         .invalidateHttpSession(true)//해당섹션 정보를 삭제
                         .deleteCookies("JESSIONID")//클라이언트에 쿠기를 삭제
                 );
